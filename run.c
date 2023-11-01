@@ -101,7 +101,7 @@ void selectOption(const char *path) {
 int main() {
     char file_path[1024];
 
-    printf("Enter file path: ");
+    printf("Enter the full file path: ");
     if (fgets(file_path, sizeof(file_path), stdin) != NULL) {
         size_t length = strlen(file_path);
         if (length > 0 && file_path[length - 1] == '\n') {
