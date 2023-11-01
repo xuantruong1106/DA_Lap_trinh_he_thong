@@ -60,7 +60,7 @@ void selectOption(const char *path) {
     }
     printf("\n1. Read file content\n");
     printf("2. Get file extension\n");
-    printf("3. Option 3\n");
+    printf("3. Get file group and id\n");
     printf("4. Option 4\n");
     printf("5. Option 5\n");
      for(int i=0; i<= length+1; i++){    
