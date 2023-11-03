@@ -26,13 +26,24 @@ void readFileContent(const char *path) {
     fclose(fptr);
 }
 
-void getFileExtension(const char* filename) {
-    const char* dot = strrchr(filename, '.');
-    if (!dot || dot == filename) {
-        printf("file extension not found or not available\n");
-    } else {
-        printf("file extension: %s\n", dot + 1);
+void getFileType(const char* filename) {
+     char command[1024];
+    snprintf(command, sizeof(command), "file -b %s", filename); // Sử dụng lệnh 'file -b' để lấy loại tệp
+
+    FILE *fp = popen(command, "r");
+    if (fp == NULL) {
+        perror("Error executing 'file' command");
+        return;
     }
+
+    char buffer[1024];
+    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        printf("File type: %s", buffer);
+    } else {
+        printf("File type not available\n");
+    }
+
+    pclose(fp);
 }
 
 void getFileGroupAndID(const char *filename) {
@@ -54,16 +65,16 @@ void getFileGroupAndID(const char *filename) {
 }
 
 void selectOption(const char *path) {
-    int length = strlen("1. read file content  ");
+    int length = strlen("|3. Get file group and id|");
     for(int i=0; i <= length+1; i++){
         printf("-");
     }
-    printf("\n1. Read file content\n");
-    printf("2. Get file extension\n");
-    printf("3. Get file group and id\n");
-    printf("4. Option 4\n");
-    printf("5. Option 5\n");
-     for(int i=0; i<= length+1; i++){    
+    printf("\n|1. Read file content\n");
+    printf("|2. Get file type\n");
+    printf("|3. Get file group and id\n");
+    printf("|4. Option 4\n");
+    printf("|5. Option 5\n");
+    for(int i=0; i<= length+1; i++){    
         printf("-");
     }
     printf("\nPress a key (1-5) or 0 to exit: ");
@@ -78,7 +89,7 @@ void selectOption(const char *path) {
             break;
         case '2':
             printf("You selected option 2\n");
-            getFileExtension(path);
+            getFileType(path);
             break;
         case '3':
             printf("You selected option 3\n");
