@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
+#include <time.h>
 
 void readFileContent(const char *path) {
     FILE *fptr;
@@ -64,6 +65,20 @@ void getFileGroupAndID(const char *filename) {
     }
 }
 
+void getFileLastAccessTime(const char *filename) {
+    struct stat fileStat;
+    if (stat(filename, &fileStat) != 0) {
+        perror("Error accessing file information");
+        return;
+    }
+
+    struct tm *access_time = localtime(&fileStat.st_atime);
+    char time_str[30];
+    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", access_time);
+
+    printf("Last access time: %s\n", time_str);
+}
+
 void selectOption(const char *path) {
     int length = strlen("|3. Get file group and id|");
     for(int i=0; i <= length+1; i++){
@@ -72,7 +87,7 @@ void selectOption(const char *path) {
     printf("\n|1. Read file content\n");
     printf("|2. Get file type\n");
     printf("|3. Get file group and id\n");
-    printf("|4. Option 4\n");
+    printf("|4. Get File Last Access Time\n");
     printf("|5. Option 5\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
@@ -97,6 +112,7 @@ void selectOption(const char *path) {
             break;
         case '4':
             printf("You selected option 4\n");
+            getFileLastAccessTime(path);
             break;
         case '5':
             printf("You selected option 5\n");
