@@ -7,6 +7,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
+#include <dirent.h>
 
 void readFileContent(const char *path) {
     FILE *fptr;
