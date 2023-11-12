@@ -28,9 +28,29 @@ void readFileContent(const char *path) {
     fclose(fptr);
 }
 
-void getFileType(const char* filename) {
-     char command[1024];
-    snprintf(command, sizeof(command), "file -b %s", filename); // Sử dụng lệnh 'file -b' để lấy loại tệp
+// void getFileType(const char* path) {
+//     char command[1024];
+//     snprintf(command, sizeof(command), "file -b %s", path);
+
+//     FILE *fp = popen(command, "r");
+//     if (fp == NULL) {
+//         perror("Error executing 'file' command");
+//         return;
+//     }
+
+//     char buffer[1024];
+//     if (fgets(buffer, sizeof(buffer), fp) != NULL) {
+//         printf("File type: %s", buffer);
+//     } else {
+//         printf("File type not available\n");
+//     }
+
+//     pclose(fp);
+// }
+
+void getFileType(const char* path) {
+    char command[1024];
+    snprintf(command, sizeof(command), "file -b %s", path);
 
     FILE *fp = popen(command, "r");
     if (fp == NULL) {
@@ -38,11 +58,9 @@ void getFileType(const char* filename) {
         return;
     }
 
-    char buffer[1024];
-    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
-        printf("File type: %s", buffer);
-    } else {
-        printf("File type not available\n");
+    int c;
+    while ((c = fgetc(fp)) != EOF) {
+        putchar(c);
     }
 
     pclose(fp);
@@ -109,7 +127,7 @@ void NumberofLink(const char *path) {
     printf("Total number of links: %d\n", totalLinks);
 }
 
-void displayPermissions(const char *filename) {
+void CheckUserFilePermissions(const char *filename) {
     struct stat fileStat;
     if (stat(filename, &fileStat) != 0) {
         perror("Error accessing file information");
@@ -127,6 +145,45 @@ void displayPermissions(const char *filename) {
     printf("\n");
 }
 
+void displayFilePermissions(const char *path){
+    struct stat file_stat;
+
+    // Lấy thông tin về tệp
+    if (stat(path, &file_stat) != 0) {
+        printf( "don't get file info");
+    }
+
+    // Dạng tệp/thư mục
+    char type = (S_ISDIR(file_stat.st_mode)) ? 'd' : '-';
+
+    // Quyền của Chủ Nhân
+    char owner_permissions[4];
+    owner_permissions[0] = (file_stat.st_mode & S_IRUSR) ? 'r' : '-';
+    owner_permissions[1] = (file_stat.st_mode & S_IWUSR) ? 'w' : '-';
+    owner_permissions[2] = (file_stat.st_mode & S_IXUSR) ? 'x' : '-';
+    owner_permissions[3] = '\0';
+
+    // Quyền của Nhóm
+    char group_permissions[4];
+    group_permissions[0] = (file_stat.st_mode & S_IRGRP) ? 'r' : '-';
+    group_permissions[1] = (file_stat.st_mode & S_IWGRP) ? 'w' : '-';
+    group_permissions[2] = (file_stat.st_mode & S_IXGRP) ? 'x' : '-';
+    group_permissions[3] = '\0';
+
+    // Quyền của Tất Cả Mọi Người
+    char others_permissions[4];
+    others_permissions[0] = (file_stat.st_mode & S_IROTH) ? 'r' : '-';
+    others_permissions[1] = (file_stat.st_mode & S_IWOTH) ? 'w' : '-';
+    others_permissions[2] = (file_stat.st_mode & S_IXOTH) ? 'x' : '-';
+    others_permissions[3] = '\0';
+
+    // Chuỗi mô tả
+    static char result[100];
+    sprintf(result, "Quyền truy cập của tệp %s: %c%s%s%s", path, type, owner_permissions, group_permissions, others_permissions);
+    printf("%s\n", result);
+
+}
+
 
 void selectOption(const char *path) {
     int length = strlen("|3. Get file group and id|");
@@ -136,8 +193,10 @@ void selectOption(const char *path) {
     printf("\n|1. Read file content\n");
     printf("|2. Get file type\n");
     printf("|3. Get file group and id\n");
-    printf("|4. Get File Last Access Time\n");
-    printf("|5. Option 5\n");
+    printf("|4. Get file last access time\n");
+    printf("|5. Number of links\n");
+    printf("|6. Check user file permissions\n");
+    printf("|8. Display file permissions\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
@@ -165,11 +224,15 @@ void selectOption(const char *path) {
             break;
         case '5':
             printf("You selected option 5\n");
-            NumberOfLinks(path);
+            NumberofLink(path);
             break;
         case '6':
             printf("You selected option 6\n");
-            displayPermissions(path);
+            CheckUserFilePermissions(path);
+            break;
+        case '8':
+            printf("You selected option 8\n");
+            displayFilePermissions(path);
             break;
         case '0':
             exit(0);
