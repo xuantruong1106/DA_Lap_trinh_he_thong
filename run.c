@@ -193,7 +193,7 @@ void selectOption(const char *path) {
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-5) or 0 to exit: ");
+    printf("\nPress a key (1-8) or 0 to exit: ");
    
     char key;
     scanf(" %c", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
