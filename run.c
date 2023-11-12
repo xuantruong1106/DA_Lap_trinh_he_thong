@@ -188,6 +188,7 @@ void selectOption(const char *path) {
     printf("|4. Get file last access time\n");
     printf("|5. Number of links\n");
     printf("|6. Check user file permissions\n");
+    printf("|7. Change file name\n");
     printf("|8. Display file permissions\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
