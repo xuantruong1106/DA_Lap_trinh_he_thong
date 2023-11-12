@@ -125,6 +125,18 @@ void CheckUserFilePermissions(const char *filename) {
     printf("\n");
 }
 
+void changeFileName(const char* filename) {
+    char newFileName[1024];
+    printf("Enter the new file name: ");
+    scanf("%s", newFileName);
+    
+    if (rename(filename, newFileName) == 0) {
+        printf("File name changed successfully\n");
+    } else {
+        perror("Error changing file name");
+    }
+}
+
 void displayFilePermissions(const char *path){
     struct stat file_stat;
 
@@ -209,6 +221,10 @@ void selectOption(const char *path) {
         case '6':
             printf("You selected option 6\n");
             CheckUserFilePermissions(path);
+            break;
+        case '7':
+            printf("You selected option 7\n");
+	    changeFileName(path);
             break;
         case '8':
             printf("You selected option 8\n");
