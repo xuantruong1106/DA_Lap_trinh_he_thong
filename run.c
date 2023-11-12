@@ -105,23 +105,6 @@ void NumberofLink(const char *path) {
     closedir(dir);
 }
 
-void CheckUserFilePermissions(const char *filename) {
-    struct stat fileStat;
-    if (stat(filename, &fileStat) != 0) {
-        perror("Error accessing file information");
-        return;
-    }
-
-    printf("File permissions: ");
-
-    // Kiểm tra quyền truy cập của người chủ
-    printf((fileStat.st_mode & S_IRUSR) ? "The file owner has access\n" : "The file owner don't have access\n");
-
-    // Kiểm tra quyền truy cập của người khác
-    printf((fileStat.st_mode & S_IROTH) ? "Guests have access\n" : "Guests do not have access\n");
-
-    printf("\n");
-}
 
 void changeFileName(const char* filename) {
     char newFileName[1024];
@@ -179,7 +162,6 @@ void selectOption(const char *path) {
     printf("|5. Number of links\n");
     printf("|6. Check user file permissions\n");
     printf("|7. Change file name\n");
-    printf("|8. Display file permissions\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
@@ -211,15 +193,11 @@ void selectOption(const char *path) {
             break;
         case '6':
             printf("You selected option 6\n");
-            CheckUserFilePermissions(path);
+            displayPermissions(path);
             break;
         case '7':
             printf("You selected option 7\n");
 	        changeFileName(path);
-            break;
-        case '8':
-            printf("You selected option 8\n");
-            displayFilePermissions(path);
             break;
         case '0':
             exit(0);
