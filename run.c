@@ -28,26 +28,6 @@ void readFileContent(const char *path) {
     fclose(fptr);
 }
 
-// void getFileType(const char* path) {
-//     char command[1024];
-//     snprintf(command, sizeof(command), "file -b %s", path);
-
-//     FILE *fp = popen(command, "r");
-//     if (fp == NULL) {
-//         perror("Error executing 'file' command");
-//         return;
-//     }
-
-//     char buffer[1024];
-//     if (fgets(buffer, sizeof(buffer), fp) != NULL) {
-//         printf("File type: %s", buffer);
-//     } else {
-//         printf("File type not available\n");
-//     }
-
-//     pclose(fp);
-// }
-
 void getFileType(const char* path) {
     char command[1024];
     snprintf(command, sizeof(command), "file -b %s", path);
