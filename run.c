@@ -88,8 +88,6 @@ void NumberofLink(const char *path) {
         return;
     }
 
-    int totalLinks = 0;
-
     while ((entry = readdir(dir)) != NULL) {
         char filePath[1024];
         snprintf(filePath, sizeof(filePath), "%s/%s", path, entry->d_name);
@@ -99,12 +97,12 @@ void NumberofLink(const char *path) {
             continue;
         }
 
-        totalLinks += fileStat.st_nlink;
+        if (S_ISDIR(fileStat.st_mode) && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+            printf("Directory: %s, Number of links: %ld\n", entry->d_name, (long)fileStat.st_nlink);
+        }
     }
 
     closedir(dir);
-
-    printf("Total number of links: %d\n", totalLinks);
 }
 
 void CheckUserFilePermissions(const char *filename) {
@@ -137,43 +135,35 @@ void changeFileName(const char* filename) {
     }
 }
 
-void displayFilePermissions(const char *path){
-    struct stat file_stat;
-
-    // Lấy thông tin về tệp
-    if (stat(path, &file_stat) != 0) {
-        printf( "don't get file info");
+void displayPermissions(const char *filename) {
+    struct stat fileStat;
+    if (stat(filename, &fileStat) != 0) {
+        perror("Error accessing file information");
+        return;
     }
 
-    // Dạng tệp/thư mục
-    char type = (S_ISDIR(file_stat.st_mode)) ? 'd' : '-';
+    printf("File permissions:\n");
 
-    // Quyền của Chủ Nhân
-    char owner_permissions[4];
-    owner_permissions[0] = (file_stat.st_mode & S_IRUSR) ? 'r' : '-';
-    owner_permissions[1] = (file_stat.st_mode & S_IWUSR) ? 'w' : '-';
-    owner_permissions[2] = (file_stat.st_mode & S_IXUSR) ? 'x' : '-';
-    owner_permissions[3] = '\0';
+    printf("Owner: ");
+    if (fileStat.st_mode & S_IRUSR) {
+        struct passwd *owner = getpwuid(fileStat.st_uid);
+        if (owner != NULL) {
+            printf("%s has access\n", owner->pw_name);
+        } else {
+            printf("Unknown user has access\n");
+        }
+    } else {
+        printf("Owner don't have access\n");
+    }
 
-    // Quyền của Nhóm
-    char group_permissions[4];
-    group_permissions[0] = (file_stat.st_mode & S_IRGRP) ? 'r' : '-';
-    group_permissions[1] = (file_stat.st_mode & S_IWGRP) ? 'w' : '-';
-    group_permissions[2] = (file_stat.st_mode & S_IXGRP) ? 'x' : '-';
-    group_permissions[3] = '\0';
+    printf("Others: ");
+    if (fileStat.st_mode & S_IROTH) {
+        printf("Guests have access\n");
+    } else {
+        printf("Guests do not have access\n");
+    }
 
-    // Quyền của Tất Cả Mọi Người
-    char others_permissions[4];
-    others_permissions[0] = (file_stat.st_mode & S_IROTH) ? 'r' : '-';
-    others_permissions[1] = (file_stat.st_mode & S_IWOTH) ? 'w' : '-';
-    others_permissions[2] = (file_stat.st_mode & S_IXOTH) ? 'x' : '-';
-    others_permissions[3] = '\0';
-
-    // Chuỗi mô tả
-    static char result[100];
-    sprintf(result, "Quyền truy cập của tệp %s: %c%s%s%s", path, type, owner_permissions, group_permissions, others_permissions);
-    printf("%s\n", result);
-
+    printf("\n");
 }
 
 
@@ -225,7 +215,7 @@ void selectOption(const char *path) {
             break;
         case '7':
             printf("You selected option 7\n");
-	    changeFileName(path);
+	        changeFileName(path);
             break;
         case '8':
             printf("You selected option 8\n");
