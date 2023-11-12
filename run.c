@@ -79,6 +79,54 @@ void getFileLastAccessTime(const char *filename) {
     printf("Last access time: %s\n", time_str);
 }
 
+void NumberofLink(const char *path) {
+    DIR *dir;
+    struct dirent *entry;
+    struct stat fileStat;
+
+    if ((dir = opendir(path)) == NULL) {
+        perror("Error opening directory");
+        return;
+    }
+
+    int totalLinks = 0;
+
+    while ((entry = readdir(dir)) != NULL) {
+        char filePath[1024];
+        snprintf(filePath, sizeof(filePath), "%s/%s", path, entry->d_name);
+
+        if (lstat(filePath, &fileStat) == -1) {
+            perror("Error accessing file information");
+            continue;
+        }
+
+        totalLinks += fileStat.st_nlink;
+    }
+
+    closedir(dir);
+
+    printf("Total number of links: %d\n", totalLinks);
+}
+
+void displayPermissions(const char *filename) {
+    struct stat fileStat;
+    if (stat(filename, &fileStat) != 0) {
+        perror("Error accessing file information");
+        return;
+    }
+
+    printf("File permissions: ");
+
+    // Kiểm tra quyền truy cập của người chủ
+    printf((fileStat.st_mode & S_IRUSR) ? "The file owner has access\n" : "The file owner don't have access\n");
+
+    // Kiểm tra quyền truy cập của người khác
+    printf((fileStat.st_mode & S_IROTH) ? "Guests have access\n" : "Guests do not have access\n");
+
+    printf("\n");
+}
+
+
 void selectOption(const char *path) {
     int length = strlen("|3. Get file group and id|");
     for(int i=0; i <= length+1; i++){
@@ -116,6 +164,11 @@ void selectOption(const char *path) {
             break;
         case '5':
             printf("You selected option 5\n");
+            NumberOfLinks(path);
+            break;
+        case '6':
+            printf("You selected option 6\n");
+            displayPermissions(path);
             break;
         case '0':
             exit(0);
