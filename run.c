@@ -118,6 +118,14 @@ void changeFileName(const char* filename) {
     }
 }
 
+void deleteFile(const char* filename) {
+    if (remove(filename) == 0) {
+        printf("File deleted successfully\n");
+    } else {
+        perror("Error deleting file");
+    }
+}
+
 void displayPermissions(const char *filename) {
     struct stat fileStat;
     if (stat(filename, &fileStat) != 0) {
@@ -162,6 +170,7 @@ void selectOption(const char *path) {
     printf("|5. Number of links\n");
     printf("|6. Check user file permissions\n");
     printf("|7. Change file name\n");
+    printf("|8. Delete file\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
@@ -198,6 +207,11 @@ void selectOption(const char *path) {
         case '7':
             printf("You selected option 7\n");
 	        changeFileName(path);
+            break;
+	case '8':
+            printf("You selected option 8\n");
+            deleteFile(path);
+	    exit(0);
             break;
         case '0':
             exit(0);
