@@ -8,6 +8,7 @@
 #include <grp.h>
 #include <time.h>
 #include <dirent.h>
+#include <libgen.h>
 
 char file_path[1024];
 char destinationPath[1024];
@@ -211,6 +212,25 @@ void restoreData(const char *sourcePath, const char *destinationPath) {
     }
 }
 
+void move_file(const char *source_path) {
+    char destination_path[100];
+    
+    printf("Nhap duong dan dich (vd: user/admin/new_folder/a.txt): ");
+    scanf(" %99s", destination_path); // Đảm bảo không vượt quá kích thước mảng
+
+    // Kiểm tra đường dẫn đích hợp lệ
+    if (strlen(destination_path) == 0) {
+        printf("Duong dan khong hop le.\n");
+    }
+
+    if (rename(source_path, destination_path) == 0) {
+        printf("Da di chuyen thanh cong tu %s den %s\n", source_path, destination_path);
+    } else {
+        perror("Loi khi di chuyen tep");
+    }
+}
+
+
 
 
 
@@ -230,10 +250,11 @@ void selectOption(const char *path) {
     printf("|9. Get file size\n");
     printf("|10. Backup data\n");
     printf("|11. Restore data\n");
+    printf("|12. Move file\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-11) or 0 to exit: ");
+    printf("\nPress a key (1-12) or 0 to exit: ");
    
     int key;
     scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
@@ -283,6 +304,10 @@ void selectOption(const char *path) {
         case 11:
             printf("You selected option 11\n");
             restoreData(destinationPath, file_path);
+            break;
+         case 12:
+            printf("You selected option 12\n");
+            move_file(path);
             break;
         
         case 0:
