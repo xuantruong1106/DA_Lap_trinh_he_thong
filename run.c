@@ -276,6 +276,14 @@ void selectOption(const char *path) {
             printf("You selected option 9\n");
             getFileSize(file_path);
             break;
+	//case '10':
+        //    printf("You selected option 10\n");
+        //    backupData();
+        //    break;
+        //case '11':
+        //    printf("You selected option 11\n");
+        //    restoreData(destinationPath, file_path);
+        //    break;
         
         case '0':
             exit(0);
