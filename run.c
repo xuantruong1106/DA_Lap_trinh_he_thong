@@ -131,34 +131,29 @@ void deleteFile(const char* filename) {
 }
 
 void displayPermissions(const char *filename) {
+    
     struct stat fileStat;
     if (stat(filename, &fileStat) != 0) {
         perror("Error accessing file information");
         return;
     }
 
-    printf("File permissions:\n");
+    printf("File permissions (in octal): %o\n", fileStat.st_mode & 0777);
+}
 
-    printf("Owner: ");
-    if (fileStat.st_mode & S_IRUSR) {
-        struct passwd *owner = getpwuid(fileStat.st_uid);
-        if (owner != NULL) {
-            printf("%s has access\n", owner->pw_name);
-        } else {
-            printf("Unknown user has access\n");
-        }
-    } else {
-        printf("Owner don't have access\n");
+void changePermissions(const char *filename){
+    int mode;
+
+    printf("Enter the permissions (in octal): ");
+    scanf("%o", &mode);
+
+    // Thay đổi quyền truy cập của tệp
+    if (chmod(filename, mode) < 0) {
+        perror("Error changing permissions");  
     }
 
-    printf("Others: ");
-    if (fileStat.st_mode & S_IROTH) {
-        printf("Guests have access\n");
-    } else {
-        printf("Guests do not have access\n");
-    }
-
-    printf("\n");
+    printf("Permissions changed successfully\n");
+   
 }
 
 void getFileSize(const char *filename) {
@@ -230,15 +225,14 @@ void move_file(const char *source_path) {
     }
 }
 
-
-
-
-
 void selectOption(const char *path) {
-    int length = strlen("|3. Get file group and id|");
+
+    int length = strlen("|6. Check user file permissions|"); // lấy chuỗi dài nhất để vẽ các dấu - chuẩn hơn
+
     for(int i=0; i <= length+1; i++){
         printf("-");
     }
+
     printf("\n|1. Read file content\n");
     printf("|2. Get file type\n");
     printf("|3. Get file group and id\n");
@@ -251,13 +245,22 @@ void selectOption(const char *path) {
     printf("|10. Backup data\n");
     printf("|11. Restore data\n");
     printf("|12. Move file\n");
+    printf("|13. change file permissions\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
     printf("\nPress a key (1-12) or 0 to exit: ");
    
     int key;
-    scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
+    // scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
+
+    while(scanf(" %d", &key) != 1){
+        while (getchar() != '\n')
+        printf("xin chon so phu hop ");
+        if(scanf(" %d", &key) == 1){
+            break;
+        }
+    }
 
     switch (key) {
         case 1:
@@ -309,7 +312,10 @@ void selectOption(const char *path) {
             printf("You selected option 12\n");
             move_file(path);
             break;
-        
+        case 13:
+            printf("You selected option 13\n");
+            changePermissions(path);
+            break;
         case 0:
             exit(0);
             break;
