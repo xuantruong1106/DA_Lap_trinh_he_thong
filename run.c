@@ -225,6 +225,33 @@ void move_file(const char *source_path) {
     }
 }
 
+void mergeFiles(const char *outputFile, char *inputFiles[], int numFiles) {
+    FILE *outFile = fopen(outputFile, "w");
+    if (outFile == NULL) {
+        perror("Error opening output file");
+        return;
+    }
+
+    for (int i = 0; i < numFiles; i++) {
+        FILE *inFile = fopen(inputFiles[i], "r");
+        if (inFile == NULL) {
+            perror("Error opening input file");
+            fclose(outFile);
+            return;
+        }
+
+        int c;
+        while ((c = fgetc(inFile)) != EOF) {
+            fputc(c, outFile);
+        }
+
+        fclose(inFile);
+    }
+
+    fclose(outFile);
+}
+
+
 void selectOption(const char *path) {
 
     int length = strlen("|6. Check user file permissions|"); // lấy chuỗi dài nhất để vẽ các dấu - chuẩn hơn
@@ -246,10 +273,11 @@ void selectOption(const char *path) {
     printf("|11. Restore data\n");
     printf("|12. Move file\n");
     printf("|13. change file permissions\n");
+    printf("|14. MergeFiles\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-12) or 0 to exit: ");
+    printf("\nPress a key (1-14) or 0 to exit: ");
    
     int key;
     // scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
@@ -316,6 +344,26 @@ void selectOption(const char *path) {
             printf("You selected option 13\n");
             changePermissions(path);
             break;
+	case 14: {
+       	    printf("You selected option 14\n");
+            printf("Enter the number of files to merge: ");
+            int numFiles;
+            scanf("%d", &numFiles);
+
+            char *inputFiles[numFiles];
+            for (int i = 0; i < numFiles; i++) {
+               inputFiles[i] = (char *)malloc(1024 * sizeof(char));
+               printf("Enter the path of file %d: ", i + 1);
+               scanf("%s", inputFiles[i]);
+            }
+
+            mergeFiles("mergedFile.txt", inputFiles, numFiles);
+
+            for (int i = 0; i < numFiles; i++) {
+                free(inputFiles[i]);
+            }
+            break;
+    	    }
         case 0:
             exit(0);
             break;
