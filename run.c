@@ -9,6 +9,9 @@
 #include <time.h>
 #include <dirent.h>
 
+char file_path[1024];
+char destinationPath[1024];
+
 void readFileContent(const char *path) {
     FILE *fptr;
     char c;
@@ -157,6 +160,59 @@ void displayPermissions(const char *filename) {
     printf("\n");
 }
 
+void getFileSize(const char *filename) {
+    struct stat fileStat;
+    if (stat(filename, &fileStat) != 0) {
+        perror("Error accessing file information");
+        return;
+    }
+
+    printf("File size: %ld bytes\n", fileStat.st_size);
+}
+
+
+void copyFile(const char *sourcePath, const char *destinationPath) {
+    FILE *sourceFile, *destinationFile;
+    char c;
+
+    if ((sourceFile = fopen(sourcePath, "r")) == NULL) {
+        printf("Error! Opening source file '%s'\n", sourcePath);
+        return;
+    }
+
+    if ((destinationFile = fopen(destinationPath, "w")) == NULL) {
+        printf("Error! Opening or creating destination file '%s'\n", destinationPath);
+        fclose(sourceFile);
+        return;
+    }
+
+    while ((c = fgetc(sourceFile)) != EOF) {
+        fputc(c, destinationFile);
+    }
+
+    fclose(sourceFile);
+    fclose(destinationFile);
+
+    printf("File copied successfully from '%s' to '%s'\n", sourcePath, destinationPath);
+}
+
+void backupData() {
+    printf("Enter file name to backup: ");
+    scanf("%s", destinationPath);  
+    copyFile(file_path, destinationPath);
+    printf("Data backed up successfully from '%s' to '%s'\n", file_path, destinationPath);
+}
+
+void restoreData(const char *sourcePath, const char *destinationPath) {
+    if (rename(sourcePath, destinationPath) == 0) {
+        printf("Data restored successfully from '%s' to '%s'\n", sourcePath, destinationPath);
+    } else {
+        perror("Error while restoring file");
+    }
+}
+
+
+
 
 void selectOption(const char *path) {
     int length = strlen("|3. Get file group and id|");
@@ -171,10 +227,13 @@ void selectOption(const char *path) {
     printf("|6. Check user file permissions\n");
     printf("|7. Change file name\n");
     printf("|8. Delete file\n");
+    printf("|9. Get file size\n");
+    printf("|10. Backup data\n");
+    printf("|11. Restore data\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-8) or 0 to exit: ");
+    printf("\nPress a key (1-11) or 0 to exit: ");
    
     char key;
     scanf(" %c", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
@@ -213,6 +272,11 @@ void selectOption(const char *path) {
             deleteFile(path);
 	    exit(0);
             break;
+	case '9':
+            printf("You selected option 9\n");
+            getFileSize(file_path);
+            break;
+        
         case '0':
             exit(0);
             break;
@@ -222,7 +286,7 @@ void selectOption(const char *path) {
 }
 
 int main() {
-    char file_path[1024];
+    
 
     printf("Enter the full file path: ");
     if (fgets(file_path, sizeof(file_path), stdin) != NULL) {
