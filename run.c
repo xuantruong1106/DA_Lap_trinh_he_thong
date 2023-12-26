@@ -235,57 +235,57 @@ void selectOption(const char *path) {
     }
     printf("\nPress a key (1-11) or 0 to exit: ");
    
-    char key;
-    scanf(" %c", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
+    int key;
+    scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
 
     switch (key) {
-        case '1':
+        case 1:
             printf("You selected option 1\n");
             readFileContent(path);
             break;
-        case '2':
+        case 2:
             printf("You selected option 2\n");
             getFileType(path);
             break;
-        case '3':
+        case 3:
             printf("You selected option 3\n");
             getFileGroupAndID(path);
             break;
-        case '4':
+        case 4:
             printf("You selected option 4\n");
             getFileLastAccessTime(path);
             break;
-        case '5':
+        case 5:
             printf("You selected option 5\n");
             NumberofLink(path);
             break;
-        case '6':
+        case 6:
             printf("You selected option 6\n");
             displayPermissions(path);
             break;
-        case '7':
+        case 7:
             printf("You selected option 7\n");
 	        changeFileName(path);
             break;
-	case '8':
-            printf("You selected option 8\n");
-            deleteFile(path);
-	    exit(0);
+        case 8:
+                printf("You selected option 8\n");
+                deleteFile(path);
+            exit(0);
+                break;
+        case 9:
+                printf("You selected option 9\n");
+                getFileSize(file_path);
+                break;
+        case 10:
+            printf("You selected option 10\n");
+            backupData();
             break;
-	case '9':
-            printf("You selected option 9\n");
-            getFileSize(file_path);
+        case 11:
+            printf("You selected option 11\n");
+            restoreData(destinationPath, file_path);
             break;
-	//case '10':
-        //    printf("You selected option 10\n");
-        //    backupData();
-        //    break;
-        //case '11':
-        //    printf("You selected option 11\n");
-        //    restoreData(destinationPath, file_path);
-        //    break;
         
-        case '0':
+        case 0:
             exit(0);
             break;
         default:
