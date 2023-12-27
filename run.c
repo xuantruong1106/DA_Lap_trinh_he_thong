@@ -251,6 +251,21 @@ void mergeFiles(const char *outputFile, char *inputFiles[], int numFiles) {
     fclose(outFile);
 }
 
+void changeFilePath(){
+    printf("Enter new the full new file path: ");   
+    while(getchar() != '\n'){
+        printf("---");
+    }
+    
+    if (fgets(file_path, sizeof(file_path), stdin) != NULL) {
+        size_t length = strlen(file_path);
+        if (length > 0 && file_path[length - 1] == '\n') {
+            file_path[length - 1] = '\0';
+        }
+    } else {
+        printf("Error entering file path.\n");
+    }
+}
 
 void selectOption(const char *path) {
 
@@ -274,6 +289,7 @@ void selectOption(const char *path) {
     printf("|12. Move file\n");
     printf("|13. change file permissions\n");
     printf("|14. MergeFiles\n");
+    printf("|15. Change file path\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
@@ -345,25 +361,29 @@ void selectOption(const char *path) {
             changePermissions(path);
             break;
 	case 14: {
-       	    printf("You selected option 14\n");
-            printf("Enter the number of files to merge: ");
-            int numFiles;
-            scanf("%d", &numFiles);
+                printf("You selected option 14\n");
+                printf("Enter the number of files to merge: ");
+                int numFiles;
+                scanf("%d", &numFiles);
 
-            char *inputFiles[numFiles];
-            for (int i = 0; i < numFiles; i++) {
-               inputFiles[i] = (char *)malloc(1024 * sizeof(char));
-               printf("Enter the path of file %d: ", i + 1);
-               scanf("%s", inputFiles[i]);
+                char *inputFiles[numFiles];
+                for (int i = 0; i < numFiles; i++) {
+                inputFiles[i] = (char *)malloc(1024 * sizeof(char));
+                printf("Enter the path of file %d: ", i + 1);
+                scanf("%s", inputFiles[i]);
+                }
+
+                mergeFiles("mergedFile.txt", inputFiles, numFiles);
+
+                for (int i = 0; i < numFiles; i++) {
+                    free(inputFiles[i]);
+                }
+                break;  
             }
-
-            mergeFiles("mergedFile.txt", inputFiles, numFiles);
-
-            for (int i = 0; i < numFiles; i++) {
-                free(inputFiles[i]);
-            }
+        case 15:
+            printf("You selected option 15\n");
+            changeFilePath();
             break;
-    	    }
         case 0:
             exit(0);
             break;
