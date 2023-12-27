@@ -293,7 +293,12 @@ void selectOption(const char *path) {
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-14) or 0 to exit: ");
+    printf("|16. Search file\n");
+    for(int i=0; i<= length+1; i++){    
+        printf("-");
+    }
+    printf("\nPress a key (1-16) or 0 to exit: ");
+    printf("\nPress a key (1-16) or 0 to exit: ");
    
     int key;
     // scanf(" %d", &key); // Sử dụng khoảng trắng trước %c để bỏ qua ký tự xuống dòng
@@ -360,7 +365,7 @@ void selectOption(const char *path) {
             printf("You selected option 13\n");
             changePermissions(path);
             break;
-	case 14: {
+	    case 14: {
                 printf("You selected option 14\n");
                 printf("Enter the number of files to merge: ");
                 int numFiles;
@@ -384,6 +389,14 @@ void selectOption(const char *path) {
             printf("You selected option 15\n");
             changeFilePath();
             break;
+        case 16:{
+            printf("You selected option 16\n");
+            fgets(userInput, sizeof(userInput), stdin); 
+	    if (userInput[strlen(userInput) - 1] == '\n') {
+		    userInput[strlen(userInput) - 1] = '\0';
+	    }
+    	    searchFile(userInput);
+    	    break;
         case 0:
             exit(0);
             break;
