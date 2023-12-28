@@ -12,6 +12,7 @@
 
 char file_path[1024];
 char destinationPath[1024];
+char userInput[256]
 
 void readFileContent(const char *path) {
     FILE *fptr;
@@ -267,6 +268,25 @@ void changeFilePath(){
     }
 }
 
+void searchFile() {
+    printf("Enter the filename to search: ");
+    fgets(userInput, sizeof(userInput), stdin);
+    if (userInput[strlen(userInput) - 1] == '\n') {
+        userInput[strlen(userInput) - 1] = '\0';
+    }
+
+    FILE *file = fopen(userInput, "r");
+    
+    if (file == NULL) {
+        printf("File %s does not exist or cannot be opened.\n", userInput);
+        return;
+    }
+
+    printf("File %s found and can be opened.\n", userInput);
+
+    fclose(file);
+}
+
 void selectOption(const char *path) {
 
     int length = strlen("|6. Check user file permissions|"); // lấy chuỗi dài nhất để vẽ các dấu - chuẩn hơn
@@ -290,14 +310,10 @@ void selectOption(const char *path) {
     printf("|13. change file permissions\n");
     printf("|14. MergeFiles\n");
     printf("|15. Change file path\n");
-    for(int i=0; i<= length+1; i++){    
-        printf("-");
-    }
     printf("|16. Search file\n");
     for(int i=0; i<= length+1; i++){    
         printf("-");
     }
-    printf("\nPress a key (1-16) or 0 to exit: ");
     printf("\nPress a key (1-16) or 0 to exit: ");
    
     int key;
@@ -392,9 +408,9 @@ void selectOption(const char *path) {
         case 16:{
             printf("You selected option 16\n");
             fgets(userInput, sizeof(userInput), stdin); 
-	    if (userInput[strlen(userInput) - 1] == '\n') {
-		    userInput[strlen(userInput) - 1] = '\0';
-	    }
+            if (userInput[strlen(userInput) - 1] == '\n') {
+                userInput[strlen(userInput) - 1] = '\0';
+            }
     	    searchFile(userInput);
     	    break;
         case 0:
